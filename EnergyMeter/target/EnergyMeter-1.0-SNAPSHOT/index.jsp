@@ -741,7 +741,7 @@ padding-top:0px; margin-top:0px;padding-bottom:0px;margin-bottom:0px;
 		<img src="http://www.xumak.com/dam/xumak-site/team/grayscale/jvasquez_bn_2.JPG" />
 		<p>Jr. Developer</p>
 		<h5><a href="" target="blank">Jose Vasquez</a></h5>
-		<h6>1100</h6>
+		<h6>11002017</h6>
 	</div>
 </div>
 				</div>

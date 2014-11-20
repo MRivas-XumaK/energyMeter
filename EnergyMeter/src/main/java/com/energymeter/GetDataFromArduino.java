@@ -101,6 +101,7 @@ public class GetDataFromArduino extends HttpServlet{
                                         secondNode = minuteNode.addNode(seconds);
                                     }
                                     secondNode.setProperty(defaultPropertyKey,request.getParameter(nameOfParameterKey));
+                                    this.repoLogout(jcrSession);
                                 } 
                             }
                         }
