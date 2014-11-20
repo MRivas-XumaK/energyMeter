@@ -42,7 +42,6 @@ public class GetDataFromArduino extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
         if(request.getParameterMap().containsKey(nameOfParameterKey)){
             Session jcrSession = repoLogin();
             try {
