@@ -29,8 +29,11 @@ public class GetDataFromArduino extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("Hola Mundo 2");
         Date x = new Date();
+        System.out.println("Connnection accepted " + x.getMinutes());
+        System.out.println("isAsync" + request.isAsyncStarted());
+        System.out.println("parameter: " + request.getParameter("power"));
+        request.logout();
     }
 
 
