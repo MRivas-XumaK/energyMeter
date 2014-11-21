@@ -706,7 +706,7 @@ padding-top:0px; margin-top:0px;padding-bottom:0px;margin-bottom:0px;
 			</div> -->
 			<div class="col-xs-12 col-md-9 col-centered" id="course-info" style="">
 				<center>
-				    <img src="http://scotthurff.com/images/landing-pages/xcode/rocket-smoker-dark.png" class="rocket">
+				    <img id="cohete" src="http://scotthurff.com/images/landing-pages/xcode/rocket-smoker-dark.png" class="rocket">
 					<!--<h1>Xcode for Designers</h1>-->
 					<h1>Be a designer who knows Xcode.</h1>
 					<!-- <h2>Be a designer who knows Xcode.</h2> -->
@@ -718,7 +718,21 @@ padding-top:0px; margin-top:0px;padding-bottom:0px;margin-bottom:0px;
 		</div>
 	</div>
 </div>	
-
+    <script>
+        $('#cohete').click(function(){
+                $.ajax({
+                    url: "http://localhost:8084/EnergyMeter/generalservlet?newuser=usr2&pss=value&macaddress=90-a2-da-oe-93-7g",
+                    context: document.body
+                }).done(function(data) {
+                    if(data === "error"){
+                        alert("The user name is not Available");
+                    } else {
+                        document.cookie="usr2=true";
+                        alert("User created");
+                    }
+                });
+        });
+    </script>
 
 
 
