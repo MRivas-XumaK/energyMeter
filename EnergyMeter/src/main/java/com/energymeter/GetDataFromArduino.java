@@ -18,6 +18,7 @@ import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
 import javax.jcr.ReferentialIntegrityException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -44,10 +45,15 @@ import org.apache.jackrabbit.commons.JcrUtils;
 public class GetDataFromArduino extends HttpServlet{
     
     private static String nameOfParameterKey = "power";
-    private static String keyToCreateNewUser = "newuser";
-    private static String keyToSavePass = "pss";
+    private static String keyNewUser = "newuser";
+    private static String keyUser = "user";
+    private static String keyPass = "pss";
     private static String keyLoadSession = "";
     private static String keyLiveData = "";
+    private static String keyTableData = "";
+    
+    
+    
     private static String nameOfProject = "energyMeter";
     private static String defaultApp = "currentApp";
     private static String defaultPropertyKey = "energy";
@@ -137,9 +143,9 @@ public class GetDataFromArduino extends HttpServlet{
             
             
         }
-        if(request.getParameterMap().containsKey(keyToCreateNewUser)){
-            String user = request.getParameter(keyToCreateNewUser);
-            String pass = request.getParameter(keyToSavePass);
+        if(request.getParameterMap().containsKey(keyNewUser)){
+            String user = request.getParameter(keyNewUser);
+            String pass = request.getParameter(keyPass);
             String macAddressTemp = request.getParameter("macaddress");
             Session jcrSession = this.repoLogin();
             try {
@@ -155,7 +161,7 @@ public class GetDataFromArduino extends HttpServlet{
                     writer.write("error");
                 } else {
                     Node userTemp = projectName.addNode(user);
-                    userTemp.setProperty(keyToSavePass,pass);
+                    userTemp.setProperty(keyPass,pass);
                     userTemp.addNode(macAddressTemp);
                     jcrSession.save();
                 }
@@ -166,14 +172,48 @@ public class GetDataFromArduino extends HttpServlet{
             }
         }
         if(request.getParameterMap().containsKey(keyLiveData)){
-            
+            Session jcrSession = this.repoLogin();
+            try{
+                Node rootNode = jcrSession.getRootNode();
+                Node projectName = null;
+                if(rootNode.hasNode(nameOfProject)){
+                    projectName = rootNode.getNode(nameOfProject);
+                }
+            } catch (RepositoryException ex) {
+                Logger.getLogger(GetDataFromArduino.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                this.repoLogout(jcrSession);
+            }
         }
         if(request.getParameterMap().containsKey(keyLoadSession)){
+            String usr = request.getParameter(keyUser);
+            String pass = request.getParameter(keyPass);
+            Session jcrSession = this.repoLogin();
+            try{
+                Node rootNode = jcrSession.getRootNode();
+                if(rootNode.hasNode(usr)){
+                    Node usrNode = rootNode.getNode(usr);
+                    String passUsr = usrNode.getProperty(pass).getString();
+                    if(passUsr.equalsIgnoreCase(usr)){
+                        Writer writer = response.getWriter();
+                        writer.write("ok");
+                    } else {
+                        Writer writer = response.getWriter();
+                        writer.write("fail");
+                    }
+                } else {
+                    Writer writer = response.getWriter();
+                    writer.write("fail");
+                }
+            } catch (RepositoryException ex) {
+                Logger.getLogger(GetDataFromArduino.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if(request.getParameterMap().containsKey(keyTableData)){
+            
             
         }
-        
-        
-        
+           
     }
 
 
