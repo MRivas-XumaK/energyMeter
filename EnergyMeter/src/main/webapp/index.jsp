@@ -19,7 +19,11 @@
 
 <title>
 Xcode for Designers - Xcode for Designers</title>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
+<script src="js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="plot/flot/jquery.js"></script>
+<script type="text/javascript" src="plot/flot/jquery.flot.js"></script>
+
 	<script src="https://secure.usefedora.com/js/jquery.placeholder.js"></script>
 		
 
@@ -29,8 +33,10 @@ Xcode for Designers - Xcode for Designers</title>
 					
 	<script type="text/javascript">
 	$(document).ready(function() {
-
-	       if("America/Mexico_City".length==0){
+            if (document.cookie.indexOf("user") < 0) {
+                 window.location = "http://localhost:8084/EnergyMeter/loginUser.jsp";
+            }
+	       if("America/Mexico_City".length===0){
 	           var visitortime = new Date();
 	           var visitortimezone = -visitortime.getTimezoneOffset()/60;
 	           $.ajax({
@@ -69,7 +75,49 @@ Xcode for Designers - Xcode for Designers</title>
 
 </script><meta property="og:url" content="http://learn.scotthurff.com/course/xcode/?ankur=1"><meta property="og:title" content="Xcode for Designers at Xcode for Designers"><meta property="og:image" content="https://s3.amazonaws.com/lecture_attachments/qPt3V64UTWW9Eg2o7i30_blur.png"><meta property="og:description" content="
 	You’re a designer who wants to become an expert at designing mobile experiences. And who wouldn't? Mobile is the future. And becoming an expert in anything means knowing your tools.
-	But do you know how to create custom Table Views that will handle your creative vision? How non-s">  </head>
+	But do you know how to create custom Table Views that will handle your creative vision? How non-s">
+
+    <script>
+        $(document).ready(function(){
+            var cont = 0;
+            var points = [[0,0]];
+            var tempArray;
+            var newPoint;
+            //$.plot($("#placeholder"), data, options);
+            //$.plot($("#flot-placeholder"), [ [[0, 0], [1, 1]] ], { yaxis: { max: 1 } });
+            var pollServerForData = function(){
+                $.ajax({
+                        url: "http://localhost:8084/EnergyMeter/generalservlet?value=true",
+                        context: document.body,
+                        async: false,
+                        timeout: 5000
+                    }).done(function(data) {
+                        console.log(data);
+                        console.log(parseInt(data));
+                        newPoint = parseInt(data);
+                        if(!isNaN(newPoint)){
+                            tempArray = new Array([cont++, newPoint]);
+                            points.push(tempArray);
+                        }
+                        var options = {
+                            series:{
+                                lines:{
+                                    show:true
+                                },
+                                points:{
+                                    show:true
+                                }
+                            }
+                        };
+                        $.plot($("#flot-placeholder"), points, options);
+                    });
+                    setTimeout(pollServerForData,3000);
+            };
+            setTimeout(pollServerForData,3000);
+        })                                        
+    </script>
+
+  </head>
 
   <body style="overflow-x:hidden;">
 	<style>
@@ -655,12 +703,6 @@ padding-top:0px; margin-top:0px;padding-bottom:0px;margin-bottom:0px;
 
   <div class="container">
 	<div class="navbar-header">
-	    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-	      <span class="sr-only">Toggle navigation</span>
-	      <span class="icon-bar"></span>
-	      <span class="icon-bar"></span>
-	      <span class="icon-bar"></span>
-	    </button>
 
 
             <a class="navbar-brand" href="#" style="color:white;font-size:30px;padding:0px;"><img src="" style="" alt="Energy Monitor" margin-top:0px;margin-bottom:0px;width:68px;height:60px;" /></a></div>
@@ -706,11 +748,14 @@ padding-top:0px; margin-top:0px;padding-bottom:0px;margin-bottom:0px;
 			</div> -->
 			<div class="col-xs-12 col-md-9 col-centered" id="course-info" style="">
 				<center>
-				    <img id="cohete" src="http://scotthurff.com/images/landing-pages/xcode/rocket-smoker-dark.png" class="rocket">
+				    <!--<img id="cohete" src="http://scotthurff.com/images/landing-pages/xcode/rocket-smoker-dark.png" class="rocket">-->
 					<!--<h1>Xcode for Designers</h1>-->
-					<h1>Be a designer who knows Xcode.</h1>
+                                        <div id="placeholder"></div>
+                                        <div id="flot-placeholder" style="width:800px;height:500px"></div>
+
+					<!--<h1>Be a designer who knows Xcode.</h1>
 					<!-- <h2>Be a designer who knows Xcode.</h2> -->
-					<h2>Learn how to create native iOS apps in 5 days.</h2>
+					<!--<h2>Learn how to create native iOS apps in 5 days.</h2>-->
 
     					
 				</center>

@@ -48,10 +48,10 @@ public class GetDataFromArduino extends HttpServlet{
     private static String keyNewUser = "newuser";
     private static String keyUser = "user";
     private static String keyPass = "pss";
-    private static String keyLoadSession = "";
+    private static String keyLoadSession = "loading";
     private static String keyLiveData = "";
     private static String keyTableData = "";
-    
+    private String value = "";
     
     
     private static String nameOfProject = "energyMeter";
@@ -77,8 +77,12 @@ public class GetDataFromArduino extends HttpServlet{
                     NodeIterator userIterator = projectName.getNodes();
                     while(userIterator.hasNext()){
                         Node userTemp = userIterator.nextNode();
-                        if(userTemp.hasNode(macAddress)){
-                            responseVar = userTemp.getNode(macAddress);
+                        if(userTemp != null){
+                            if(userTemp.hasNode(macAddress)){
+                                responseVar = userTemp.getNode(macAddress);
+                            }
+                        }else{
+                            System.out.println("node macaddress don't exist");
                         }
                     }
                 }
@@ -131,6 +135,7 @@ public class GetDataFromArduino extends HttpServlet{
                     } else {
                         secondTemp = minuteTemp.addNode(second);
                     }
+                    value = powerParameter;
                     secondTemp.setProperty(defaultPropertyKey, powerParameter);
                     jcrSession.save();
                     /*Aqui termina codigo para guardar datos*/ 
@@ -143,6 +148,10 @@ public class GetDataFromArduino extends HttpServlet{
             
             
         }
+        if(request.getParameterMap().containsKey("value")){
+            Writer writer = response.getWriter();
+            writer.write(value);
+        }
         if(request.getParameterMap().containsKey(keyNewUser)){
             String user = request.getParameter(keyNewUser);
             String pass = request.getParameter(keyPass);
@@ -151,19 +160,25 @@ public class GetDataFromArduino extends HttpServlet{
             try {
                 Node rootNode = jcrSession.getRootNode();
                 Node projectName = null;
+                System.out.println(rootNode.getPath());
                 if(rootNode.hasNode(nameOfProject)){
                     projectName = rootNode.getNode(nameOfProject);
                 } else {
                     projectName = rootNode.addNode(nameOfProject);
-                }
-                if(projectName.hasNode(user)){
-                    Writer writer = response.getWriter();
-                    writer.write("error");
-                } else {
-                    Node userTemp = projectName.addNode(user);
-                    userTemp.setProperty(keyPass,pass);
-                    userTemp.addNode(macAddressTemp);
                     jcrSession.save();
+                }
+                System.out.println(projectName.getPath());
+                if(null != projectName){
+                    if((projectName.hasNodes())&&(projectName.hasNode(user))){
+                        Writer writer = response.getWriter();
+                        writer.write("error");
+                    } else {
+                        Node userTemp = projectName.addNode(user);
+                        System.out.println("node----"+userTemp.getPath());
+                        userTemp.setProperty(keyPass,pass);
+                        userTemp.addNode(macAddressTemp);
+                        jcrSession.save();
+                    }
                 }
             } catch (RepositoryException ex) {
                 Logger.getLogger(GetDataFromArduino.class.getName()).log(Level.SEVERE, null, ex);
@@ -224,7 +239,7 @@ public class GetDataFromArduino extends HttpServlet{
         
     }
     
-   /* protected void cleanNodes(){
+    protected void cleanNodes(){
         Session jcrSession = this.repoLogin();
         Node rootNode;
         try {
@@ -262,11 +277,10 @@ public class GetDataFromArduino extends HttpServlet{
             Logger.getLogger(GetDataFromArduino.class.getName()).log(Level.SEVERE, null, ex);
         } finally{
             this.repoLogout(jcrSession);
-            return response;
         }
+        return response;
         
-        
-    }*/
+    }
     
     protected Session repoLogin(){
         try{
