@@ -47,7 +47,7 @@
         <input type="text" id="username" class="form-control" placeholder="New Username" required>
 		
 		<label for="inputEmail" class="sr-only">License</label>
-        <input id="license" type="text"  class="form-control" placeholder="Your Email address" required autofocus>
+        <input id="license" type="text"  class="form-control" placeholder="License" required autofocus>
 		
         <label for="password" class="sr-only">Password</label>
         <input  type="password" id="password" class="form-control" placeholder="New Password" required>
@@ -63,7 +63,7 @@
                 var user = $('#username').val();
                 var license = $('#license').val();
                 var pass = $('#password').val();
-                var urlTo = "http://localhost:8084/EnergyMeter/generalservlet?newuser="+user+"&pss="+pass+"&macaddress="+license;
+                var urlTo = "http://"+window.location.host+"/EnergyMeter/generalservlet?newuser="+user+"&pss="+pass+"&macaddress="+license;
                 $.ajax({
                     url: urlTo,
                     context: document.body
@@ -72,10 +72,15 @@
                         alert("The user name is not Available");
                     } else {
                         document.cookie=  "user=" + user+"; path=/";
-                        window.location = "http://localhost:8084/EnergyMeter/index.jsp";
+                        window.location = "http://"+window.location.host+"/EnergyMeter/index.jsp";
                     }
                 });
-        })
+        });
+        $(document).ready(function() {
+            if (document.cookie.indexOf("user") >= 0) {
+                 window.location = "http://"+window.location.host+"/EnergyMeter/index.jsp";
+            }
+        });
     </script>
     
         

@@ -25,6 +25,9 @@
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="assets/js/ie-emulation-modes-warning.js"></script>
+    <script src="js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="plot/flot/jquery.js"></script>
+<script type="text/javascript" src="plot/flot/jquery.flot.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -39,8 +42,8 @@
 
       <form class="form-signin" role="form">
         <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputEmail" class="sr-only">Username</label>
+        <input type="text" id="username" class="form-control" placeholder="User" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
         <div class="checkbox">
@@ -49,11 +52,35 @@
           </label>		  
         </div>
 		<div>
-			<a href="http://localhost:8084/EnergyMeter/newUser.jsp" >New User</a>
+			<a id="refNew" href="EnergyMeter/newUser.jsp" >New User</a>
 		</div>
 		<br>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <button id="sendUser" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
       </form>
+    <script>
+        $('#sendUser').click(function(){
+                var user = $('#username').val();
+                var pass = $('#password').val();
+                var urlTo = "http://"+window.location.host+"/EnergyMeter/generalservlet?loading=true&user="+user+"&pss="+pass;
+                $.ajax({
+                    url: urlTo,
+                    context: document.body
+                }).done(function(data) {
+                    if(data === "error"){
+                        alert("The user name is not Available");
+                    } else {
+                        document.cookie=  "user=" + user+"; path=/";
+                        window.location = "http://"+window.location.host+"/EnergyMeter/index.jsp";
+                    }
+                });
+        });
+        $(document).ready(function() {
+            $('#refNew').attr("href","http://"+window.location.host+"/EnergyMeter/newUser.jsp");
+            if (document.cookie.indexOf("user") >= 0) {
+                 window.location = "http://"+window.location.host+"/EnergyMeter/index.jsp";
+            }
+        });
+    </script>>
 
     </div> <!-- /container -->
 

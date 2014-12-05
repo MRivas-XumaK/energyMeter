@@ -206,6 +206,7 @@ public class GetDataFromArduino extends HttpServlet{
             Session jcrSession = this.repoLogin();
             try{
                 Node rootNode = jcrSession.getRootNode();
+                System.out.println("---"+usr);
                 if(rootNode.hasNode(usr)){
                     Node usrNode = rootNode.getNode(usr);
                     String passUsr = usrNode.getProperty(pass).getString();
